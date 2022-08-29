@@ -3,21 +3,21 @@ import json
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 
-
+FILE_ID = '1zLdEcpzCp357s3Rse112Lch9EMUWzMLE'
+SCOPE = ['https://www.googleapis.com/auth/drive.readonly']
 def get_from_google_drive():
     """
     Authorization of the service client
     Download file
     :return: request
     """
-    file_id = '1zLdEcpzCp357s3Rse112Lch9EMUWzMLE'
-    scope = ['https://www.googleapis.com/auth/drive.readonly']
+
     creds = ServiceAccountCredentials.from_json_keyfile_name(
         'gdrive_access/employees_secret.json',
-        scope
+        SCOPE
     )
     service = build('drive', 'v3', credentials=creds)
-    request = service.files().get_media(fileId=file_id).execute()
+    request = service.files().get_media(fileId=FILE_ID).execute()
     return request
 
 
@@ -28,18 +28,18 @@ def csv_to_json(data):
     :param data:
     """
 
-    with open('data_storage/file.csv', 'w') as csv_f:
+    with open('resourses/file.csv', 'w') as csv_f:
         json_array = []
         csv_f.write(data.decode())
 
-    with open('data_storage/file.csv', 'r') as csv_f:
+    with open('resourses/file.csv', 'r') as csv_f:
         csv_reader = csv.DictReader(csv_f.readlines(), delimiter=',')
         # convert each csv row into python dict
         for row in csv_reader:
             # add this python dict to json array
             json_array.append(row)
     # convert python jsonArray to JSON String and write to file
-    with open('data_storage/data.json', 'w', encoding='utf-8') as json_f:
+    with open('resourses/data.json', 'w', encoding='utf-8') as json_f:
         json_string = json.dumps(json_array, indent=4)
         json_f.write(json_string)
         line_selection(json_string)
